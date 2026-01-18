@@ -5,33 +5,35 @@ from collections import deque
 from random import random
 
 
-def plot_clusters(X: npt.NDArray[np.floating], labels: deque[int]) -> None:
-    unique_labels = np.unique(labels)
+def plot_clusters(X: npt.NDArray[np.floating], point_types: npt.NDArray[np.integer]) -> None:
+    plt.figure(figsize=(8, 6))
 
-    plt.figure(figsize=(6, 6))
+    categories = [
+        {"value": 1, "color": "red", "label": "Ponto Central (1)", "size": 30, "marker": "o"},
+        {"value": 0, "color": "blue", "label": "Borda (0)", "size": 20, "marker": "o"},
+        {"value": -1, "color": "gray", "label": "Ruído (-1)", "size": 10, "marker": "x"},
+    ]
 
-    for label in unique_labels:
-        mask = labels == label
-
-        if label == -1:
-            # Ruído
+    for cat in categories:
+        mask = (point_types == cat["value"])
+        
+        if np.any(mask):
             plt.scatter(
                 X[mask, 0],
                 X[mask, 1],
-                c="black",
-                s=10,
-                label="Noise"
-            )
-        else:
-            plt.scatter(
-                X[mask, 0],
-                X[mask, 1],
-                s=10,
-                label=f"Cluster {label}"
+                c=cat["color"],
+                s=cat["size"],
+                marker=cat["marker"],
+                label=cat["label"],
+                alpha=0.7
             )
 
-    plt.title("DBSCAN implementado do zero")
+    plt.title("DBSCAN: Classificação por Tipos de Pontos")
     plt.xlabel("x1")
     plt.ylabel("x2")
+    plt.legend()
+    plt.grid(True, linestyle='--', alpha=0.5)
     plt.axis("equal")
-    plt.savefig(f"./resources/output/fig-{int(random() * 10000)}.png", dpi=300)
+    
+    filename = f"./resources/output/plot-types-{int(random() * 10000)}.png"
+    plt.savefig(filename, dpi=300)
