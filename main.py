@@ -6,15 +6,16 @@ Equipe:
     - Francisco Rodrigo de Santiago Pinheiro (554394) [ES]
     - Vitor Costa de Sousa (536678) [ES]
 """
-from lib.datasets import TWO_CIRCLES
+import numpy as np
+from lib.datasets import IRIS
 from src.algorithms.dbscan import DBSCAN
 from utils.plot import plot_clusters
 
 
 def app() -> None:
-    instance1 = DBSCAN(X=TWO_CIRCLES, eps=0.2, min_pts=5)
-    labels = instance1.execute()
-    plot_clusters(TWO_CIRCLES, labels)
+    dbscan = DBSCAN(X=IRIS.data, eps=0.5, min_pts=5)
+    classfication = dbscan.execute()
+    plot_clusters(IRIS.data, np.array(classfication), dataset_ref="Iris")
 
 
 if __name__ == "__main__":
